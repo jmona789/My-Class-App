@@ -34,6 +34,6 @@ app.get("/", function (req, res) {
 //sync sequelize and tell server to listen
 sequelize.sync().then(function () {
   app.listen(PORT, function () {
-    console.log("LISTENING!");
+    console.log("LISTENING ON " + PORT);
   });
 });
