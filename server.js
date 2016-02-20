@@ -4,7 +4,7 @@ var expressHandlebars = require("express-handlebars");
 var bodyParser = require("body-parser");
 var Sequelize = require("sequelize");
 
-var sequelize = new Sequelize("validationDatabase", "root");
+var sequelize = new Sequelize("my_class_db", "root");
 
 var PORT = process.env.NODE_ENV || 9001;
 
@@ -25,6 +25,30 @@ app.set("view engine", "handlebars");
 app.use(bodyParser.urlencoded({
   extended: false
 }));
+
+var Instructors = sequelize.define("instructors", {
+  first_name: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      is: ["^[a-z]+$","i"]
+    }
+  },
+  last_name: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      is: ["^[a-z]+$","i"]
+    }
+  },
+  title: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      is: ["^[a-z]+$","i"]
+    }
+  }
+});
 
 //home route
 app.get("/", function (req, res) {
