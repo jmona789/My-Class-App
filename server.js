@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 
-var Instructor = sequelize.define("instructors", {
+var Instructor = sequelize.define("instructor", {
   first_name: {
     type: Sequelize.STRING,
     allowNull: false,
