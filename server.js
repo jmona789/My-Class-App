@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 
-var Instructors = sequelize.define("instructors", {
+var Instructor = sequelize.define("instructors", {
   first_name: {
     type: Sequelize.STRING,
     allowNull: false,
@@ -50,6 +50,23 @@ var Instructors = sequelize.define("instructors", {
   }
 });
 
+var Student = sequelize.define("student", {
+  first_name: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      is: ["^[a-z]+$","i"]
+    }
+  },
+  last_name: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      is: ["^[a-z]+$","i"]
+    }
+  }
+});
+
 //home route
 app.get("/", function (req, res) {
   res.render("home");
@@ -64,7 +81,7 @@ app.get("/login", function (req, res) {
 });
 
 //sync sequelize and tell server to listen
-sequelize.sync().then(function () {
+sequelize.sync({force: true}).then(function () {
   app.listen(PORT, function () {
     console.log("LISTENING ON " + PORT);
   });
