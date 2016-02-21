@@ -47,6 +47,14 @@ var Instructor = sequelize.define("instructor", {
     validate: {
       is: ["^[a-z]+$","i"]
     }
+  },
+  email:{
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  password:{
+    type: Sequelize.STRING,
+    allowNull: false,
   }
 });
 
@@ -64,20 +72,40 @@ var Student = sequelize.define("student", {
     validate: {
       is: ["^[a-z]+$","i"]
     }
+  },
+  email:{
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  password:{
+    type: Sequelize.STRING,
+    allowNull: false,
   }
 });
 
-//home route
+Instructor.hasMany(Student);
+
+//routes
 app.get("/", function (req, res) {
   res.render("home");
 });
 
-app.get("/register", function (req, res) {
-  res.render("register");
+app.get("/student_register", function (req, res) {
+  res.render("student_register");
 });
 
 app.get("/login", function (req, res) {
   res.render("login");
+});
+
+//posting
+app.post("/registerstudent", function(req, res){
+  Student.create(req.body).then(function(student) {
+    req.session.authenticated = student;
+    res.redirect('/');
+  }).catch(function(err) {
+    res.redirect('/?msg=' + err.message);
+  });
 });
 
 //sync sequelize and tell server to listen
