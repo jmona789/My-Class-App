@@ -26,7 +26,9 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 
-var Instructor = sequelize.define("instructor", {
+
+//define models
+var Teacher = sequelize.define("teacher", {
   first_name: {
     type: Sequelize.STRING,
     allowNull: false,
@@ -41,20 +43,38 @@ var Instructor = sequelize.define("instructor", {
       is: ["^[a-z]+$","i"]
     }
   },
-  title: {
+  email: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  password: {
+    type: Sequelize.STRING,
+    allowNull: false
+  }
+});
+
+var Teaching_Assistant = sequelize.define("teaching_assistant", {
+  first_name: {
     type: Sequelize.STRING,
     allowNull: false,
     validate: {
       is: ["^[a-z]+$","i"]
     }
   },
-  email:{
+  last_name: {
     type: Sequelize.STRING,
     allowNull: false,
+    validate: {
+      is: ["^[a-z]+$","i"]
+    }
   },
-  password:{
+  email: {
     type: Sequelize.STRING,
-    allowNull: false,
+    allowNull: false
+  },
+  password: {
+    type: Sequelize.STRING,
+    allowNull: false
   }
 });
 
@@ -73,17 +93,24 @@ var Student = sequelize.define("student", {
       is: ["^[a-z]+$","i"]
     }
   },
-  email:{
+  email: {
     type: Sequelize.STRING,
-    allowNull: false,
+    allowNull: false
   },
-  password:{
+  password: {
     type: Sequelize.STRING,
-    allowNull: false,
+    allowNull: false
   }
 });
 
-Instructor.hasMany(Student);
+//define relations between tables
+Teaching_Assistant.belongsToMany(Student, {
+  through: "class"
+});
+Student.belongsToMany(Teaching_Assistant, {
+  through: "class"
+});
+Student.belongsTo(Teacher);
 
 //routes
 app.get("/", function (req, res) {
@@ -94,22 +121,44 @@ app.get("/student_register", function (req, res) {
   res.render("student_register");
 });
 
+app.get("/instructor_register", function (req, res) {
+  res.render("instructor_register");
+});
+
 app.get("/login", function (req, res) {
   res.render("login");
 });
 
 //posting
-app.post("/registerstudent", function(req, res){
-  Student.create(req.body).then(function(student) {
+app.post("/registerstudent", function (req, res){
+  Student.create(req.body).then(function (student) {
     req.session.authenticated = student;
     res.redirect('/');
-  }).catch(function(err) {
+  }).catch(function (err) {
     res.redirect('/?msg=' + err.message);
   });
 });
 
+app.post("/registerInstructor", function (req, res) {
+  if (req.body.group1 === "teacher") {
+    Teacher.create(req.body).then(function (teacher) {
+      req.session.authenticated = teacher;
+      res.redirect('/');
+    }).catch(function (err) {
+      res.redirect('/?msg=' + err.message);
+    });
+  }else{
+    Teaching_Assistant.create(req.body).then(function (teaching_assistant) {
+      req.session.authenticated = teaching_assistant;
+      res.redirect('/');
+    }).catch(function (err) {
+      res.redirect('/?msg=' + err.message);
+    });
+  }
+});
+
 //sync sequelize and tell server to listen
-sequelize.sync({force: true}).then(function () {
+sequelize.sync().then(function () {
   app.listen(PORT, function () {
     console.log("LISTENING ON " + PORT);
   });
