@@ -114,7 +114,18 @@ Student.belongsTo(Teacher);
 
 //routes
 app.get("/", function (req, res) {
-  res.render("home");
+  Student.findAll({
+    include: [{
+      model: Teacher
+    }]
+  }).then(function(teacher) {
+    console.log({teacher: teacher[0]});
+    console.log({teacher: teacher[1]});
+    console.log({teacher: teacher[2]});
+    res.render('home', {
+      teacher: teacher
+    })
+  });
 });
 
 app.get("/student_register", function (req, res) {
