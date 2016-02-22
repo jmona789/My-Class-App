@@ -3,10 +3,10 @@
     <h1>Classes</h1>
     {{#each teacher}}
       <div>
-        <h2>{{teacher.first_name}} {{teacher.last_name}}</h2>
+        <h2>{{first_name}} {{last_name}}</h2>
         <ul>
-          {{#each student}}
-          <li>{{student.first_name}} {{student.last_name}}</li>
+          {{#each students}}
+          <li>{{first_name}} {{last_name}}</li>
           {{/each}}
         </ul>
       </div>

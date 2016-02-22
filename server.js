@@ -110,18 +110,15 @@ Teaching_Assistant.belongsToMany(Student, {
 Student.belongsToMany(Teaching_Assistant, {
   through: "class"
 });
-Student.belongsTo(Teacher);
+Teacher.hasMany(Student);
 
 //routes
 app.get("/", function (req, res) {
-  Student.findAll({
+  Teacher.findAll({
     include: [{
-      model: Teacher
+      model: Student
     }]
   }).then(function(teacher) {
-    console.log({teacher: teacher[0]});
-    console.log({teacher: teacher[1]});
-    console.log({teacher: teacher[2]});
     res.render('home', {
       teacher: teacher
     })
